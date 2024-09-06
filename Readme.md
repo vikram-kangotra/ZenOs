@@ -25,5 +25,11 @@ Just replace `docker` with `podman` in the above commands.
 ## Compile x86_64
 
 ```sh
-make build-x86_64
+make
+```
+
+## Run
+
+```sh
+qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso
 ```
