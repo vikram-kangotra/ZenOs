@@ -15,7 +15,7 @@ GRUB_MKRESCUE := grub-mkrescue
 
 # Flags
 ASMFLAGS := -f elf64
-CFLAGS := -I include -ffreestanding -MMD -MP
+CFLAGS := -O3 -I include -ffreestanding -MMD -MP
 LDFLAGS := -n -T targets/x86_64/linker.ld
 
 # Source files
