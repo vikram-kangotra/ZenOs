@@ -1,35 +1,62 @@
-# Allow CROSS_COMPILE to be configurable by the user
-CROSS_COMPILE ?= x86_64-elf-
+# Directories
+SRC_DIR := src
+BUILD_DIR := build
+DIST_DIR := dist
+ASM_DIR := $(SRC_DIR)/x86_64
+C_DIR := $(SRC_DIR)/x86_64
+KERNEL_C_DIR := $(SRC_DIR)/kernel
+ISO_DIR := targets/x86_64/iso
 
-kernel_source_files := $(shell find src/kernel -name *.c)
-kernel_object_files := $(patsubst src/kernel/%.c, build/kernel/%.o, $(kernel_source_files))
+# Toolchain
+AS := nasm
+CC := gcc
+LD := ld
+GRUB_MKRESCUE := grub-mkrescue
 
-x86_64_c_source_files := $(shell find src/x86_64 -name *.c)
-x86_64_c_object_files := $(patsubst src/x86_64/%.c, build/x86_64/%.o, $(x86_64_c_source_files))
+# Flags
+ASMFLAGS := -f elf64
+CFLAGS := -I include -ffreestanding -MMD -MP
+LDFLAGS := -n -T targets/x86_64/linker.ld
 
-x86_64_asm_source_files := $(shell find src/x86_64 -name *.asm)
-x86_64_asm_object_files := $(patsubst src/x86_64/%.asm, build/x86_64/%.o, $(x86_64_asm_source_files))
+# Source files
+ASM_SRC := $(shell find $(ASM_DIR) -name '*.asm')
+C_SRC := $(shell find $(C_DIR) $(KERNEL_C_DIR) -name '*.c')
 
-x86_64_object_files := $(x86_64_c_object_files) $(x86_64_asm_object_files)
+# Object files
+OBJ := $(ASM_SRC:$(ASM_DIR)/%.asm=$(BUILD_DIR)/%.o) $(C_SRC:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
 
-$(kernel_object_files): build/kernel/%.o : src/kernel/%.c
-	mkdir -p $(dir $@) && \
-	$(CROSS_COMPILE)gcc -c -I include -ffreestanding $(patsubst build/kernel/%.o, src/kernel/%.c, $@) -o $@
+# Dependency files
+DEP := $(OBJ:.o=.d)
 
-$(x86_64_c_object_files): build/x86_64/%.o : src/x86_64/%.c
-	mkdir -p $(dir $@) && \
-	$(CROSS_COMPILE)gcc -c -I include -ffreestanding $(patsubst build/x86_64/%.o, src/x86_64/%.c, $@) -o $@
+# Target
+TARGET := $(DIST_DIR)/x86_64/kernel.bin
+ISO := $(DIST_DIR)/x86_64/kernel.iso
 
-$(x86_64_asm_object_files): build/x86_64/%.o : src/x86_64/%.asm
-	mkdir -p $(dir $@) && \
-	nasm -f elf64 $(patsubst build/x86_64/%.o, src/x86_64/%.asm, $@) -o $@
+# Rules
+all: $(ISO)
 
-.PHONY: build-x86_64
-build-x86_64: $(kernel_object_files) $(x86_64_object_files)
-	mkdir -p dist/x86_64 && \
-	$(CROSS_COMPILE)ld -n -o dist/x86_64/kernel.bin -T targets/x86_64/linker.ld $(kernel_object_files) $(x86_64_object_files) && \
-	cp dist/x86_64/kernel.bin targets/x86_64/iso/boot/kernel.bin && \
-	grub-mkrescue /usr/lib/grub/i386-pc -o dist/x86_64/kernel.iso targets/x86_64/iso
+$(ISO): $(TARGET)
+	@mkdir -p $(ISO_DIR)/boot
+	cp $(TARGET) $(ISO_DIR)/boot/kernel.bin
+	$(GRUB_MKRESCUE) /usr/lib/grub/i386-pc -o $(ISO) $(ISO_DIR)
 
+$(TARGET): $(OBJ)
+	@mkdir -p $(@D)
+	$(LD) $(LDFLAGS) -o $@ $^
+
+# Assembly source
+$(BUILD_DIR)/%.o: $(ASM_DIR)/%.asm
+	@mkdir -p $(@D)
+	$(AS) $(ASMFLAGS) $< -o $@
+
+# C source
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Include dependency files
+-include $(DEP)
+
+.PHONY: clean
 clean:
-	rm -rf dist build
+	rm -rf $(BUILD_DIR) $(DIST_DIR)
