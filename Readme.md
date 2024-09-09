@@ -1,6 +1,6 @@
-# ZenOs
+# ZenOS
 
-ZenOs is an Operating System with native WebAssembly support.
+ZenOS is an Operating System with native WebAssembly support.
 
 ## Docker build instructions
 
