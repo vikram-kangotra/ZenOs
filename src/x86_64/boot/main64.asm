@@ -1,15 +1,21 @@
 global long_mode_start
 extern kernel_main
+extern gdt64.data
+extern mboot_saved_info.mboot_eax
+extern mboot_saved_info.mboot_ebx
 
 section .text
 bits 64
 long_mode_start:
-    mov ax, 0
+    mov ax, gdt64.data
     mov ss, ax
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
+
+    mov edi, dword [mboot_saved_info.mboot_eax]
+    mov esi, dword [mboot_saved_info.mboot_ebx]
 
     call kernel_main
 

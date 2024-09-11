@@ -6,6 +6,9 @@ bits 32
 start:
     mov esp, stack_top
 
+    mov dword [mboot_saved_info.mboot_eax], eax
+    mov dword [mboot_saved_info.mboot_ebx], ebx
+
     call check_multiboot
     call check_cpuid
     call check_long_mode
@@ -126,11 +129,25 @@ stack_bottom:
     resb 4096 * 4
 stack_top:
 
+section .bss
+align 16
+mboot_saved_info:
+    .mboot_eax: resd 1
+    .mboot_ebx: resd 1
+
+global mboot_saved_info.mboot_eax
+global mboot_saved_info.mboot_ebx
+
 section .rodata
+align 8
 gdt64:
     dq 0 ; zero entry
 .code_segment: equ $ - gdt64
     dq (1 << 43) | (1 << 44) | (1 << 47) | (1 << 53) ; 64-bit code segment
+.data: equ $ - gdt64
+    dq (1 << 44) | (1 << 47) | (1 << 41) 
 .pointer:
     dw $ - gdt64 - 1
     dd gdt64
+
+global gdt64.data
