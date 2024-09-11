@@ -105,3 +105,24 @@ void print_hex(unsigned long num) {
         }
     }
 }
+void print_int(long num) {
+    if (num == 0) {
+        print_char('0');
+        return;
+    } 
+    if (num<0) {
+        print_char('-');
+        num = -num;
+    }
+    char buff[20];
+    size_t i = 0;
+    
+    while (num>0) {
+        buff[i++] = (num % 10) + '0';
+        num /= 10;
+    }
+    
+    while (i>0) {
+        print_char(buff[--i]);
+    }
+}
