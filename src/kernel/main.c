@@ -1,30 +1,6 @@
 #include "print.h"
 #include "multiboot2/multiboot2.h"
 
-#define to_hex(c) ((c) >= 10 ? 'A' + ((c) - 10) : '0' + (c))
-
-void print_hex(unsigned long num) {
-    char hex_digits[16];
-    int i = 0;
-
-    print_str("0x");
-
-    if (num == 0) {
-        print_str("0");
-        return;
-    }
-
-    while (num != 0) {
-        int rem = num % 16;
-        hex_digits[i++] = to_hex(rem);
-        num = num / 16;
-    }
-
-    while (i > 0) {
-        print_char(hex_digits[--i]);
-    }
-}
-
 void kernel_main(unsigned long magic, unsigned long addr) {
     print_clear();
 

@@ -1,3 +1,5 @@
+#include <stdbool.h>
+
 #include "print.h"
 
 const static size_t NUM_COLS = 80;
@@ -81,4 +83,25 @@ void print_str(char* str) {
 
 void print_set_color(uint8_t foreground, uint8_t background) {
     color = foreground + (background << 4);
+}
+
+#define to_hex(c) ((c) < 10 ? '0' + (c) : 'A' + ((c) - 10))
+
+void print_hex(unsigned long num) {
+    print_str("0x");
+
+    if (num == 0) {
+        print_char('0');
+        return;
+    }
+
+    bool leading_zero = true;
+    for (int i = (sizeof(num) * 8) - 4; i >= 0; i -= 4) {
+        int nibble = (num >> i) & 0xF;
+
+        if (nibble != 0 || !leading_zero) {
+            print_char(to_hex(nibble));
+            leading_zero = false;
+        }
+    }
 }
