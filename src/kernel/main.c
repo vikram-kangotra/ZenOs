@@ -20,5 +20,4 @@ void kernel_main(unsigned long magic, unsigned long addr) {
 
     print_set_color(PRINT_COLOR_YELLOW, PRINT_COLOR_BLACK);
     print_str("Welcome to ZenOS Kernel");
-    print_int(-1002566);
 }

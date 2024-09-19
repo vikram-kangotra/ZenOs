@@ -1,4 +1,4 @@
-# ZenOS
+#ZenOS
 
 ZenOS is an Operating System with native WebAssembly support.
 
@@ -22,7 +22,7 @@ docker run --rm --it -v %cd%:/root/env zenos
 
 Just replace `docker` with `podman` in the above commands.
 
-## Compile x86_64
+## Compile
 
 ```sh
 make
