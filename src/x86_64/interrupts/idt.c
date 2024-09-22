@@ -26,9 +26,12 @@ void idt_init() {
         idt_set_entry(i, (uint64_t)isr_default_handler);
     }
 
-    idt_set_entry(0, (uint64_t)divide_by_zero);
-    idt_set_entry(6, (uint64_t)invalid_opcode);
-    idt_set_entry(8, (uint64_t)double_fault);
+    idt_set_entry(0, (uint64_t)divide_by_zero_handler);
+    idt_set_entry(6, (uint64_t)invalid_opcode_handler);
+    idt_set_entry(3, (uint64_t)breakpoint_handler);
+    idt_set_entry(8, (uint64_t)double_fault_handler);
+    idt_set_entry(13, (uint64_t)general_protection_fault_handler);
+    idt_set_entry(14, (uint64_t)page_fault_handler);
 
     load_idt((uint64_t)&idtp);
 }

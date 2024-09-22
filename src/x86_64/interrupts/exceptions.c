@@ -21,20 +21,38 @@ void print_interrupt_frame(struct InterruptStackFrame *frame) {
     print_hex(frame->stack_segment);
 }
 
-void divide_by_zero(struct InterruptStackFrame *frame) {
+void divide_by_zero_handler(struct InterruptStackFrame *frame) {
     print_str("Divide by zero\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
-void invalid_opcode(struct InterruptStackFrame *frame) {
+void invalid_opcode_handler(struct InterruptStackFrame *frame) {
     print_str("Invalid opcode\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
-void double_fault(struct InterruptStackFrame *frame) {
+void breakpoint_handler(struct InterruptStackFrame *frame) {
+    print_str("Breakpoint\n");
+    print_interrupt_frame(frame);
+    while (1);
+}
+
+void double_fault_handler(struct InterruptStackFrame *frame) {
     print_str("Double fault\n");
+    print_interrupt_frame(frame);
+    while (1);
+}
+
+void general_protection_fault_handler(struct InterruptStackFrame *frame) {
+    print_str("General protection fault\n");
+    print_interrupt_frame(frame);
+    while (1);
+}
+
+void page_fault_handler(struct InterruptStackFrame *frame) {
+    print_str("Page fault\n");
     print_interrupt_frame(frame);
     while (1);
 }
