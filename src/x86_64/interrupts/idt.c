@@ -1,5 +1,6 @@
 #include "interrupts/idt.h"
 #include "interrupts/isr.h"
+#include "interrupts/exceptions.h"
 
 #define IDT_ENTRIES 256
 struct idt_entry idt[IDT_ENTRIES];
@@ -25,7 +26,9 @@ void idt_init() {
         idt_set_entry(i, (uint64_t)isr_default_handler);
     }
 
-    idt_set_entry(0, (uint64_t)isr_divide_by_zero);
+    idt_set_entry(0, (uint64_t)divide_by_zero);
+    idt_set_entry(6, (uint64_t)invalid_opcode);
+    idt_set_entry(8, (uint64_t)double_fault);
 
     load_idt((uint64_t)&idtp);
 }
