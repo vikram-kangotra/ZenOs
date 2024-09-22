@@ -1,4 +1,5 @@
 #include "print.h"
+#include "interrupts/idt.h"
 #include "multiboot2/multiboot2.h"
 
 void kernel_main(unsigned long magic, unsigned long addr) {
@@ -20,4 +21,8 @@ void kernel_main(unsigned long magic, unsigned long addr) {
 
     print_set_color(PRINT_COLOR_YELLOW, PRINT_COLOR_BLACK);
     print_str("Welcome to ZenOS Kernel");
+
+    idt_init();
+
+    asm volatile("sti");
 }
