@@ -31,5 +31,5 @@ make
 ## Run
 
 ```sh
-qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso -serial kernel.log
+qemu-system-x86_64 -cdrom dist/x86_64/kernel.iso -serial file:kernel.log
 ```
