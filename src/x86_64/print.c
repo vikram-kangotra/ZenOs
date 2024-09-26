@@ -1,5 +1,5 @@
 #include <stdbool.h>
-
+#include <stdarg.h>
 #include "print.h"
 
 const static size_t NUM_COLS = 80;
@@ -129,4 +129,38 @@ void print_int(long num) {
     while (i>0) {
         print_char(buff[--i]);
     }
+}
+
+void print (const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+
+    for (size_t i = 0; format[i] != '\0'; i++) {
+        if (format[i] == '%' && format[i+1] != '\0') {
+            i++;
+            switch (format[i]) {
+                case 'd' : 
+                    print_int(va_arg(args, int));
+                    break;
+                case 'x' :
+                    print_hex(va_arg(args, unsigned int));
+                    break;
+                case 's' :
+                    print_str(va_arg(args, const char*));
+                    break;
+                case 'c' :
+                    print_char((char)va_arg(args, int));
+                    break;
+                case '%' :
+                    print_char('%');
+                    break;
+                default : 
+                    print_char('%');
+                    print_char(format[i]);
+            }
+        } else {
+            print_char(format[i]);
+        }
+    }
+    va_end(args);
 }
