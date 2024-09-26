@@ -35,7 +35,7 @@ ISO := $(DIST_DIR)/x86_64/kernel.iso
 # Rules
 all: $(ISO)
 
-$(ISO): $(TARGET)
+$(ISO): $(TARGET) $(ISO_DIR)/boot/grub/grub.cfg
 	@mkdir -p $(ISO_DIR)/boot
 	cp $(TARGET) $(ISO_DIR)/boot/kernel.bin
 	$(GRUB_MKRESCUE) /usr/lib/grub/i386-pc -o $(ISO) $(ISO_DIR)
