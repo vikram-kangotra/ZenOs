@@ -23,10 +23,5 @@ enum {
 };
 
 void print_clear();
-void print_char(char character);
-void print_str(const char* string);
 void print_set_color(uint8_t foreground, uint8_t background);
-void print_hex(unsigned long num);
-void print_int(long num);
-
-void print(const char* format, ...);
+void kprintf(const char* format, ...);
