@@ -13,19 +13,17 @@ void kernel_main(unsigned long magic, unsigned long addr) {
     print_set_color(PRINT_COLOR_RED, PRINT_COLOR_BLACK);
 
     if (magic != MULTIBOOT2_BOOTLOADER_MAGIC) {
-        print("Invalid magic number: ");
-        print("%x", magic);
+        kprintf("Invalid magic number: %x", magic);
         return;
     }
 
     if (addr & 7) {
-        print("unaligned mbi: ");
-        print("%x", addr);
+        kprintf("unaligned mbi: %x", addr);
         return;
     }
 
     print_set_color(PRINT_COLOR_YELLOW, PRINT_COLOR_BLACK);
-    print("Welcome to ZenOS Kernel\n");
+    kprintf("Welcome to ZenOS Kernel\n");
     idt_init();
     sti();
 
