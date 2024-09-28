@@ -49,5 +49,12 @@ void general_protection_fault_handler(struct InterruptStackFrame *frame) {
 void page_fault_handler(struct InterruptStackFrame *frame) {
     error("Page fault\n");
     print_interrupt_frame(frame);
+
+    unsigned long cr2;
+    asm volatile("mov %%cr2, %0" : "=r"(cr2));
+
+    write_serial_string("Page fault at address ");
+    write_serial_hex(cr2);
+
     while (1);
 }
