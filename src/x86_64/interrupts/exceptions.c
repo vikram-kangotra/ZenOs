@@ -1,5 +1,6 @@
 #include "interrupts/exceptions.h"
 #include "print.h"
+#include "kernel/serial.h"
 
 void print_interrupt_frame(struct InterruptStackFrame *frame) {
     print_str("Interrupt frame at ");
@@ -21,38 +22,43 @@ void print_interrupt_frame(struct InterruptStackFrame *frame) {
     print_hex(frame->stack_segment);
 }
 
+void error(const char* err) {
+    print_str(err);
+    write_serial_string(err);
+}
+
 void divide_by_zero_handler(struct InterruptStackFrame *frame) {
-    print_str("Divide by zero\n");
+    error("Divide by zero\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
 void invalid_opcode_handler(struct InterruptStackFrame *frame) {
-    print_str("Invalid opcode\n");
+    error("Invalid opcode\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
 void breakpoint_handler(struct InterruptStackFrame *frame) {
-    print_str("Breakpoint\n");
+    error("Breakpoint\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
 void double_fault_handler(struct InterruptStackFrame *frame) {
-    print_str("Double fault\n");
+    error("Double fault\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
 void general_protection_fault_handler(struct InterruptStackFrame *frame) {
-    print_str("General protection fault\n");
+    error("General protection fault\n");
     print_interrupt_frame(frame);
     while (1);
 }
 
 void page_fault_handler(struct InterruptStackFrame *frame) {
-    print_str("Page fault\n");
+    error("Page fault\n");
     print_interrupt_frame(frame);
     while (1);
 }
